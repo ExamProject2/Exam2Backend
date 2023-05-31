@@ -1,14 +1,9 @@
 let express = require('express');
 let router = express.Router();
 
-router.get('/info', function(req, res){
-    res.json({
-        name:'Katya',
-        password:'1234',
-        age:23,
-    })
-})
+const adminController = require('../controllers/statistic/get.mjs');
 
+router.get('/info', adminController.getAdminInfo)
 router.post('/info', function(request, response, next){
     const query = request.query;
     const params = request.params;

@@ -38,31 +38,33 @@ router.post('/event-log', function (request, response){
     response.status(200).send();
 })
 
-router.post('/file/get-as-array', function(request,response){
-    try{
-        fs.readFile('eventLog.txt', 'utf8', function(error, data){
-            if(error){
-                console.log(error);
-            }
-            const lines =data.split(/\r?\n/);
-            const result=[];
-            for(let item of lines){
-                console.log(`line => [${item}]`);
-                if(typeof item === "string" && item){
-                    let obj = JSON.parse(item);
-                    if(obj && Array.isArray(obj) && obj.length>0){
-                        result.push(obj)
-                    }
-                }
-            }
-            // const lines = data.split('\n').map(line => line.trim());
-            response.status(200).json(result);
-        });
-    }catch(e){
-        return response.status(404).send({...error});
-    }
+// router.post('/file/get-as-array', function(request,response){
+//     try{
+//         fs.readFile('eventLog.txt', 'utf8', function(error, data){
+//             if(error){
+//                 console.log(error);
+//             }
+//             const lines =data.split(/\r?\n/);
+//             const result=[];
+//             for(let item of lines){
+//                 console.log(`line => [${item}]`);
+//                 if(typeof item === "string" && item){
+//                     let obj = JSON.parse(item);
+//                     if(obj && Array.isArray(obj) && obj.length>0){
+//                         result.push(obj)
+//                     }
+//                 }
+//             }
+//             // const lines = data.split('\n').map(line => line.trim());
+//             response.status(200).json(result);
+//         });
+//     }catch(e){
+//         return response.status(404).send({...error});
+//     }
+//
+// })
 
-})
-
+const eventController = require('../controllers/event/post.mjs');
+router.get('/readFile', eventController.readFileAsArray)
 
 module.exports = router;

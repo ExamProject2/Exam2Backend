@@ -4,15 +4,17 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('untitled1:server');
-var http = require('http');
+import app from '../app.mjs';
+import debugModule from 'debug';
+import http from 'http';
+const debug = debugModule('untitled1:server');
+
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '8001');
+const port = normalizePort(process.env.PORT || '8001');
 app.set('port', port);
 
 /**
