@@ -1,48 +1,77 @@
 import fs from "fs";
 
 export const appendLog = (logData) => {
-    fs.appendFileSync("eventLog.txt", JSON.stringify(logData)+'\r\n');
-    return true;
-}
-export const readFile = () => {
-    fs.rename('eventLog.txt', 'process_eventLog.txt', ()=>{
-        try{
-            fs.readFile('process_eventLog.txt', 'utf8', function(error, data){
-                if(error){
-                    console.log(error);
-                }
-                const lines =data.split(/\r?\n/);
-                const result=[];
-                for(let item of lines){
-                    console.log(`line => [${item}]`);
-                    if(typeof item === "string" && item){
-                        let obj = JSON.parse(item);
-                        if(obj && Array.isArray(obj) && obj.length>0){
-                            result.push(obj)
-                        }
-                    }
-                }
-                const objMap = new Map();
-                for (const obj of result) {
-                    if (objMap.has(obj.target)) {
-                        const objTarget = objMap.get(obj.target);
-                        objTarget.count++;
-                    } else {
-                        objMap.set(obj.target, obj)
-                    }
-                }
-                const targetList = [...objMap.values()];
-                return result === true;
-            });
-        }catch(e){
-            return null;
+    try{
+        if(!Array.isArray(logData) || logData.length === 0){
+            return true;
         }
-    })
+
+        fs.appendFileSync("eventLog.txt", JSON.stringify(logData)+'\r\n');
+
+        return true;
+    }catch(err){
+        console.log('StatAddError', err);
+        return false;
+    }
+}
+export const processStatistic = () => {
+    try{
+        fs.renameSync('eventLog.txt', 'process_eventLog.txt');
+        let targetList = null;
+        const data = fs.readFileSync('process_eventLog.txt', 'utf8');
+        const lines =data.split(/\r?\n/);
+        const result=[];
+
+        for(let item of lines){
+            console.log(`line => [${item}]`);
+            if(typeof item === "string" && item){
+                let obj = JSON.parse(item);
+                if(obj && Array.isArray(obj) && obj.length>0){
+                    result.push(obj)
+                }
+            }
+        }
+
+        const prevStat = readStatFile();
+        const objMap = new Map();
+
+        if (prevStat) {
+            for (const obj of prevStat) {
+                objMap.set(obj.target, obj)
+            }
+        }
+
+        for (const obj of result) {
+            if (objMap.has(obj.target)) {
+                const objTarget = objMap.get(obj.target);
+                objTarget.count++;
+            } else {
+                objMap.set(obj.target, obj)
+            }
+        }
+
+        targetList = [...objMap.values()];
+
+        if (targetList){
+            fs.writeFileSync('stat_eventLog.txt', JSON.stringify(targetList));
+        }
+        fs.unlinkSync('process_eventLog.txt')
+        console.log('cron works');
+    }catch(err){
+        console.log('FileError', err);
+    }
 }
 
 export const readStatFile = () => {
-    fs.readFile('stat_eventLog.txt', 'utf8', function(error, data){
-        return data;
-    })
+    try{
+        let fileContent = fs.readFileSync('stat_eventLog.txt', 'utf8');
+        fileContent=JSON.parse(fileContent);
+
+        return Array.isArray(fileContent) ? fileContent : null;
+    }catch(err){
+        console.log('StatReadError', err);
+        return null;
+    }
+
 }
 
