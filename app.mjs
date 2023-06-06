@@ -4,6 +4,8 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
+import cron from "node-cron";
+import cronFnct from "./services/cron.mjs";
 
 import indexRouter from './routers/index.mjs';
 
@@ -33,5 +35,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+cronFnct();
 // module.exports = app;
 export default app;

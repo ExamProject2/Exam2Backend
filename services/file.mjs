@@ -51,12 +51,10 @@ export const processStatistic = () => {
         }
 
         targetList = [...objMap.values()];
-
         if (targetList){
             fs.writeFileSync('stat_eventLog.txt', JSON.stringify(targetList));
         }
         fs.unlinkSync('process_eventLog.txt')
-        console.log('cron works');
     }catch(err){
         console.log('FileError', err);
     }

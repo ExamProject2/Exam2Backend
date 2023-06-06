@@ -1,8 +1,6 @@
 import {processStatistic} from "./file.mjs";
-const cron = require('node-cron');
+import cron from 'node-cron';
 
-// export const cronFunction = () => {
-//     processStatistic()
-// }
-
- cron.schedule('*/1 * * * *', processStatistic);
+const cronFnct = () =>{cron.schedule('* * * * *', processStatistic)};
+export default cronFnct;
+// '*/1 * * * *'
