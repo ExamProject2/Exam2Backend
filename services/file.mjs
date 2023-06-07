@@ -18,6 +18,7 @@ export const processStatistic = () => {
     try{
         if (!fs.existsSync('eventLog.txt')) {
             console.log('Файл не существует.');
+            return;
         }
         fs.renameSync('eventLog.txt', 'process_eventLog.txt');
         let targetList = null;
