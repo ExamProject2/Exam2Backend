@@ -68,6 +68,11 @@ console.log(result);
 
 export const readStatFile = () => {
     try{
+        if(!fs.existsSync('stat_eventLog.txt')) {
+            console.log('Файл не существует.');
+            return null;
+        }
+
         let fileContent = fs.readFileSync('stat_eventLog.txt', 'utf8');
         fileContent=JSON.parse(fileContent);
 
