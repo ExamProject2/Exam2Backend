@@ -16,6 +16,9 @@ export const appendLog = (logData) => {
 }
 export const processStatistic = () => {
     try{
+        if (!fs.existsSync('eventLog.txt')) {
+            console.log('Файл не существует.');
+        }
         fs.renameSync('eventLog.txt', 'process_eventLog.txt');
         let targetList = null;
         const data = fs.readFileSync('process_eventLog.txt', 'utf8');
@@ -31,7 +34,7 @@ export const processStatistic = () => {
                 }
             }
         }
-
+console.log(result);
         const prevStat = readStatFile();
         const objMap = new Map();
 
@@ -41,12 +44,14 @@ export const processStatistic = () => {
             }
         }
 
-        for (const obj of result) {
-            if (objMap.has(obj.target)) {
-                const objTarget = objMap.get(obj.target);
-                objTarget.count++;
-            } else {
-                objMap.set(obj.target, obj)
+        for (const row of result) {
+            for (const obj of row) {
+                if (objMap.has(obj.target)) {
+                    const objTarget = objMap.get(obj.target);
+                    objTarget.count++;
+                } else {
+                    objMap.set(obj.target, obj)
+                }
             }
         }
 
