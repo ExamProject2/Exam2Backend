@@ -6,6 +6,9 @@ import logger from 'morgan';
 import cors from 'cors';
 import cron from "node-cron";
 import cronFnct from "./services/cron.mjs";
+import pgbd from './services/pgdb.mjs';
+import User from "./models/User.mjs";
+import Order from "./models/Order.mjs";
 
 import indexRouter from './routers/index.mjs';
 
@@ -37,4 +40,6 @@ app.use(function(err, req, res, next) {
 
 cronFnct();
 // module.exports = app;
+
+
 export default app;
